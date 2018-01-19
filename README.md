@@ -17,8 +17,24 @@ Links
 * https://poshwsus.codeplex.com/ - PoshWSUS Module
 * https://portal.influxdata.com/downloads - Telegraf
 * https://grafana.com/ - Grafana
+* https://github.com/jorgedlcruz/veeam_grafana - Veeam Grafana
 
 Special Thanks
 --------------
 This script wouldn't have been possible without the PoshWSUS module and also Jorge de la Cruz for his veeam-grafana script in which I was able to template my work on. 
 
+Features of the Script
+----------------------
+* Gathers Client information gives a count on each
+* Provides Update information and count on each (Critical/Updates/Services Packs)
+* Provides informaton on how many machines require updates, reboots, failed updates
+
+
+Installation
+-------------
+Please read the installation documention on how to install this script
+
+
+Feature Requests & Contribute
+-----------------------------
+Please feel free to request any additional features and if you wish to contribute I am more than happy for that to happen. 
