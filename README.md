@@ -14,6 +14,6 @@ Prerequisite
 
 Links
 -----
-https://poshwsus.codeplex.com/ - PoshWSUS Module
-https://portal.influxdata.com/downloads - Telegraf
-https://grafana.com/ - Grafana
+* https://poshwsus.codeplex.com/ - PoshWSUS Module
+* https://portal.influxdata.com/downloads - Telegraf
+* https://grafana.com/ - Grafana
