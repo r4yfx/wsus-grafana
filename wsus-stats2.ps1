@@ -8,8 +8,8 @@
         .Notes
         NAME:  wsus-stats.ps1
         ORIGINAL NAME: wsus.ps1
-        LASTEDIT: 15/01/2018
-        VERSION: 0.1
+        LASTEDIT: 19/01/2018
+        VERSION: 0.2
         KEYWORDS: WSUS, Grafana 
    
         .Link
@@ -22,8 +22,7 @@
  #>
 
 Import-Module PoshWSUS
-$script:Wsus = [Microsoft.UpdateServices.Administration.AdminProxy]::getUpdateServer()
-
+Connect-PSWSUSServer
 
 #region: Data Collecting
 # Collect Client Information
@@ -44,6 +43,7 @@ $clienthostswina = @($client | ?{$_.OSDescription -eq "Windows Server 2012 R2"})
 $clienthostswinb = @($client | ?{$_.OSDescription -eq "Windows Server 2008 R2 Datacenter Edition"})
 $clienthostswinc = @($client | ?{$_.OSDescription -eq "Windows Server 2008 R2 Standard Edition"})
 $clienthostswind = @($client | ?{$_.OSDescription -eq "Windows Server 2012"})
+$clienthostswine = @($client | ?{$_.OSDescription -eq "Windows 7"}) 
 
 #endregion
 
@@ -60,30 +60,45 @@ $wsusfailed = @($updatesummary | ?{$_.Failed -ge 1})
 $wsusreboot = @($updatesummary | ?{$_.PendingReboot -ge 1})
 
 
-#region: JSON Output for Telegraf
-Write-Host "{" 
+#region: # InfluxDB Output for Telegraf
+ 
 $Count = $clienthostswina.Count
-Write-Host "`"Windows Server 2012 R2`"": "$Count,"
+$body="Windows Server 2012 R2=$Count"
+Write-Host $body 
 $Count = $clienthostswinb.Count
-Write-Host "`"Windows Server 2008 R2 Datacenter Edition`"": "$Count,"
+$body="Windows Server 2008 R2 Datacenter Edition=$Count"
+Write-Host $body 
 $Count = $clienthostswinc.Count
-Write-Host "`"Windows Server 2008 R2 Standard Edition`"": "$Count,"
+$body="Windows Server 2008 R2 Standard Edition=$Count"
+Write-Host $body
 $Count = $clienthostswind.Count
-Write-Host "`"Windows Server 2012`"": "$Count,"
+$body="Windows Server 2012=$Count"
+Write-Host $body
+$Count = $clienthostswine.Count
+$body="Windows 7=$Count"
+Write-Host $body
 $Count = $wsusupdatea.Count
-Write-Host "`"Critical Updates`"": "$Count,"
+$body="Critical Updates=$Count"
+Write-Host $body
 $Count = $wsusupdateb.Count
-Write-Host "`"Updates`"": "$Count,"
+$body="Updates=$Count"
+Write-Host $body
 $Count = $wsusupdatec.Count
-Write-Host "`"Service Packs`"": "$Count,"
+$body="Service Packs=$Count"
+Write-Host $body
 $Count = $client.Count
 Write-Host "`"Number of Clients`"": "$Count,"
+$body="Number of Clients=$Count"
+Write-Host $body
 $Count = $wsusneed.Count
-Write-Host "`"Req-Updates`"": "$Count,"
+$body="Req-Updates=$Count"
+Write-Host $body
 $Count = $wsusfailed.Count
-Write-Host "`"Failed`"": "$Count,"
+$body="Failed=$Count"
+Write-Host $body
 $Count = $wsusreboot.Count
-Write-Host "`"Req-Reboot`"": "$Count,"
-Write-Host "}" 
+$body="Req-Reboot=$Count"
+Write-Host $body
+
 
 #endregion
