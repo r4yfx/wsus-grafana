@@ -1,0 +1,27 @@
+-------------------------------------------------------------------------------------------------------------------------------------
+-                                                   Installation Documentation                                                      -
+-                                                                                                                                   -
+-                                                          Date: 19/01/18                                                           -
+-                                                                                                                                   -
+-------------------------------------------------------------------------------------------------------------------------------------
+
+The installation of the script is very easy; 
+
+* Download wsus-stats.ps1
+* Place this file in the desired location in your c:\ drive
+* Add the next to your telegraf.conf and restart the telegraf service. Mind the Script path, also if your environment is quite large, you need to tune the interval and timeout and set them higher times 600s for example
+
+<code>
+ [[inputs.exec]]
+  commands = ["powershell C:/veeam-stats.ps1"]
+  name_override = "veeamstats"
+  interval = "60s"
+  timeout = "60s"
+  data_format = "influx"
+</code>
+
+* Download the Grafana JSON dashboard and import this into Grafana
+* You will need to make amendments to the dashboard as there will be more than likely changes in the datasources etc. 
+* Enjoy! :) 
+
+NB - There is also an example telegraf.conf file available within this if you needing assistance. 
