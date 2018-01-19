@@ -17,3 +17,8 @@ Links
 * https://poshwsus.codeplex.com/ - PoshWSUS Module
 * https://portal.influxdata.com/downloads - Telegraf
 * https://grafana.com/ - Grafana
+
+Special Thanks
+--------------
+This script wouldn't have been possible without the PoshWSUS module and also Jorge de la Cruz for his veeam-grafana script in which I was able to template my work on. 
+
