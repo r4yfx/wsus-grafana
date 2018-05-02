@@ -1,8 +1,11 @@
 # wsus-grafana
 Windows Server Update Services - Importing this to Grafana
 
+![alt tag](https://raw.githubusercontent.com/r4yfx/wsus-grafana/master/Capture.PNG)
+
 Thank you for taking the time and looking at this script.
-The script is currently in development at the moment, but will extract data from WSUS server, locally and whilst using telegraf this will import the data into an infludb. 
+This script lies within your Windows Server Update Management box, and the script is executed by telegraf service to input the data into grafana, via influxdb. 
+
 
 Prerequisite
 --------------
