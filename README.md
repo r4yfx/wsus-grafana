@@ -10,14 +10,14 @@ This script lies within your Windows Server Update Management box, and the scrip
 Prerequisite
 --------------
 * Grafana
-* Telegraf v1.5 running on the server
-* WSUS Server - Running 2012 R2
+* Telegraf v1.5 or above running on the server
+* WSUS Server - Running 2012 R2 or above
 * PoshWSUS Module
 * Script to run locally on the WSUS Server
 
 Links
 -----
-* https://poshwsus.codeplex.com/ - PoshWSUS Module
+* https://www.powershellgallery.com/packages/PoshWSUS/ - PoshWSUS Module
 * https://portal.influxdata.com/downloads - Telegraf
 * https://grafana.com/ - Grafana
 * https://github.com/jorgedlcruz/veeam_grafana - Veeam Grafana
