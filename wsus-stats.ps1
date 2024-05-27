@@ -8,8 +8,8 @@
         .Notes
         NAME:  wsus-stats.ps1
         ORIGINAL NAME: wsus.ps1
-        LASTEDIT: 19/01/2018
-        VERSION: 0.3
+        LASTEDIT: 28/02/2022
+        VERSION: 0.4
         KEYWORDS: WSUS, Grafana 
    
         .Link
@@ -38,20 +38,36 @@ $wsusupdates = Get-WsusUpdate
 #endregion
 
 
-#region: Preparing Client Information
-$clienthostswina = @($client | ?{$_.OSDescription -eq "Windows Server 2012 R2"})
-$clienthostswinb = @($client | ?{$_.OSDescription -eq "Windows Server 2008 R2 Datacenter Edition"})
-$clienthostswinc = @($client | ?{$_.OSDescription -eq "Windows Server 2008 R2 Standard Edition"})
-$clienthostswind = @($client | ?{$_.OSDescription -eq "Windows Server 2012"})
-$clienthostswine = @($client | ?{$_.OSDescription -eq "Windows 7"}) 
-
+#region: Client Information
+foreach ($os in ($client | Select-Object -ExpandProperty OSDescription -Unique | Sort-Object)) {
+        $osString = switch ($os) {
+             'Windows (Version 10.0)' {'windows10'}
+             'Windows 10 Enterprise'  {'windows10ent'}
+             {$_ -match 'Windows 10 Pro'} {'windows10pro'}
+             'Windows (Version 11.0)' {'windows11'}
+             'Windows 10 Enterprise'  {'windows11ent'}
+             {$_ -match 'Windows 11 Pro'} {'windows11pro'}
+             'Windows Server 2012' {'windows2012'}
+             'Windows Server 2012 R2' {'windows2012r2'}
+             'Windows Server 2016 Standard' {'windows2016'}
+             'Windows Server 2016 Datacenter' {'windows2016dc'}
+             'Windows Server 2019 Standard' {'windows2019'}
+             'Windows Server 2019 Datacenter' {'windows2019dc'}
+             'Windows Server 2022 Standard' {'windows2022'}
+             'Windows Server 2022 Datacenter' {'windows2022dc'}
+             Default {$_ -replace "\s" -replace 'server'} # should handle most cases where OSver not in above list
+        }
+        $osCount = ($client | Where-Object {$_.OSDescription -eq $os}).count
+        Write-Host "wsus-stats $($osString)=$($osCount)"
+}
 #endregion
 
-#region: Preparing Update Information
-$wsusupdatea = @($wsusupdates | ?{$_.Classification -eq "Critical Updates"})
-$wsusupdateb = @($wsusupdates | ?{$_.Classification -eq "Updates"})
-$wsusupdatec = @($wsusupdates | ?{$_.Classification -eq "Service Packs"})
-
+#region: Update Information
+foreach ($wsusUpdateClassification in ($wsusupdates | Where-Object {$_.Classification -in @('Updates', 'Critical Updates', 'Service Packs')} | Select-Object -ExpandProperty Classification -Unique)) {
+        $wsusUpdateCount = ($wsusupdates | Where-Object {$_.Classification -eq $wsusUpdateClassification}).Count
+        $wsusClassificationString = $($wsusUpdateClassification -replace "\s").ToLower()
+        Write-Host "wsus-stats $($wsusClassificationString)=$($wsusUpdateCount)"
+}
 #endregion
 
 #region: Summary of Updates
@@ -61,31 +77,6 @@ $wsusreboot = @($updatesummary | ?{$_.PendingReboot -ge 1})
 
 
 #region: # InfluxDB Output for Telegraf
- 
-$Count = $clienthostswina.Count
-$body="wsus-stats windows2012r2=$Count"
-Write-Host $body 
-$Count = $clienthostswinb.Count
-$body="wsus-stats windows2008r2dced=$Count"
-Write-Host $body 
-$Count = $clienthostswinc.Count
-$body="wsus-stats windows2008stded=$Count"
-Write-Host $body
-$Count = $clienthostswind.Count
-$body="wsus-stats windows2012=$Count"
-Write-Host $body
-$Count = $clienthostswine.Count
-$body="wsus-stats windows7=$Count"
-Write-Host $body
-$Count = $wsusupdatea.Count
-$body="wsus-stats criticalupdates=$Count"
-Write-Host $body
-$Count = $wsusupdateb.Count
-$body="wsus-stats updates=$Count"
-Write-Host $body
-$Count = $wsusupdatec.Count
-$body="wsus-stats sp=$Count"
-Write-Host $body
 $Count = $client.Count
 $body="wsus-stats numberofclients=$Count"
 Write-Host $body
